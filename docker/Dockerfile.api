@@ -1,0 +1,25 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# git is required at runtime, not build time — GitPython (scanner/git_extractor.py)
+# shells out to the real `git` binary to clone/inspect repositories being scanned.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+# Install the CPU-only torch build first so the plain `pip install -r requirements.txt`
+# below (which resolves torch==2.3.1 from PyPI's default index) sees it already
+# satisfied and skips reinstalling it — PyPI's default torch wheel bundles the full
+# CUDA/NVIDIA driver stack (~2-3GB) this container never uses (no GPU passthrough here;
+# ml/inference.py already falls back to CPU when torch.cuda.is_available() is False),
+# and pulling it was what exhausted disk space on this dev machine's first build attempt.
+RUN pip install --no-cache-dir torch==2.3.1 --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

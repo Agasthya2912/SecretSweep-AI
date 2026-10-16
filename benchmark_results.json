@@ -1,0 +1,102 @@
+{
+  "per_repo": {
+    "test_keys": {
+      "SecretSweep": {
+        "tp": 5,
+        "fp": 1,
+        "fn": 1,
+        "fp_from_designed_traps": 0,
+        "precision": 0.8333,
+        "recall": 0.8333,
+        "f1": 0.8333,
+        "runtime_sec": 20.029
+      },
+      "GitLeaks": {
+        "tp": 5,
+        "fp": 0,
+        "fn": 1,
+        "fp_from_designed_traps": 0,
+        "precision": 1.0,
+        "recall": 0.8333,
+        "f1": 0.9091,
+        "runtime_sec": 1.01
+      },
+      "TruffleHog": {
+        "tp": 4,
+        "fp": 0,
+        "fn": 2,
+        "fp_from_designed_traps": 0,
+        "precision": 1.0,
+        "recall": 0.6667,
+        "f1": 0.8,
+        "runtime_sec": 12.872
+      }
+    },
+    "synthetic": {
+      "SecretSweep": {
+        "tp": 15,
+        "fp": 1,
+        "fn": 0,
+        "fp_from_designed_traps": 0,
+        "precision": 0.9375,
+        "recall": 1.0,
+        "f1": 0.9677,
+        "runtime_sec": 9.942
+      },
+      "GitLeaks": {
+        "tp": 9,
+        "fp": 1,
+        "fn": 6,
+        "fp_from_designed_traps": 0,
+        "precision": 0.9,
+        "recall": 0.6,
+        "f1": 0.72,
+        "runtime_sec": 1.881
+      },
+      "TruffleHog": {
+        "tp": 5,
+        "fp": 0,
+        "fn": 10,
+        "fp_from_designed_traps": 0,
+        "precision": 1.0,
+        "recall": 0.3333,
+        "f1": 0.5,
+        "runtime_sec": 8.917
+      }
+    }
+  },
+  "overall": {
+    "SecretSweep": {
+      "tp": 20,
+      "fp": 2,
+      "fn": 1,
+      "precision": 0.9091,
+      "recall": 0.9524,
+      "f1": 0.9302,
+      "runtime_sec": 29.971
+    },
+    "GitLeaks": {
+      "tp": 14,
+      "fp": 1,
+      "fn": 7,
+      "precision": 0.9333,
+      "recall": 0.6667,
+      "f1": 0.7778,
+      "runtime_sec": 2.891
+    },
+    "TruffleHog": {
+      "tp": 9,
+      "fp": 0,
+      "fn": 12,
+      "precision": 1.0,
+      "recall": 0.4286,
+      "f1": 0.6,
+      "runtime_sec": 21.789
+    }
+  },
+  "tool_available": {
+    "SecretSweep": true,
+    "GitLeaks": true,
+    "TruffleHog": true
+  }
+}

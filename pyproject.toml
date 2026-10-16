@@ -1,0 +1,99 @@
+[project]
+name = "secretsweep-ai"
+version = "0.1.0"
+description = "LLM-augmented semantic data-flow analysis framework for proactive credential leakage detection and developer risk governance across Git repositories."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "SecretSweep AI Team" }]
+keywords = [
+    "credential-leakage-detection",
+    "git-security",
+    "devsecops",
+    "large-language-models",
+    "static-analysis",
+]
+
+dependencies = [
+    "fastapi==0.111.0",
+    "uvicorn[standard]==0.30.1",
+    "pydantic==2.7.4",
+    "pydantic-settings==2.3.4",
+    "sqlalchemy==2.0.31",
+    "alembic==1.13.2",
+    "psycopg2-binary==2.9.9",
+    "asyncpg==0.29.0",
+    "aiosqlite==0.20.0",
+    "neo4j==5.22.0",
+    "redis==5.0.7",
+    "celery==5.4.0",
+    "python-jose[cryptography]==3.3.0",
+    "passlib[bcrypt]==1.7.4",
+    "python-multipart==0.0.9",
+    "python-dotenv==1.0.1",
+    "httpx==0.27.0",
+    "gitpython==3.1.43",
+    "networkx==3.3",
+    "transformers==4.42.4",
+    "torch==2.3.1",
+    "onnx==1.16.1",
+    "onnxruntime==1.18.1",
+    "scikit-learn==1.5.1",
+    "numpy==1.26.4",
+    "datasets==2.20.0",
+    "slack-sdk==3.31.0",
+    "jira==3.8.0",
+    "PyGithub==2.3.0",
+    "requests==2.32.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.2.2",
+    "pytest-cov==5.0.0",
+    "black==24.4.2",
+    "ruff==0.5.1",
+    "mypy==1.10.1",
+]
+
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = [
+    "api*",
+    "scanner*",
+    "ml*",
+    "cdfg*",
+    "validators*",
+    "profiler*",
+    "hooks*",
+    "integrations*",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+# .venv is excluded so --cov=. measures only this project's code, not the
+# entire virtualenv (torch/transformers/fastapi/... would otherwise dominate
+# both runtime and the reported percentage).
+omit = [
+    "dashboard/*",
+    "*/test_*",
+    "*/migrations/*",
+    "*/.venv/*",
+]

@@ -1,0 +1,89 @@
+version: "3.9"
+services:
+  secretsweep-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    ports: ["8000:8000"]
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://ss:ss@postgres:5432/secretsweep
+      - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=production
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USERNAME=neo4j
+      - NEO4J_PASSWORD=secretsweep
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      neo4j:
+        condition: service_started
+    volumes:
+      - ./ml/models:/app/ml/models  # mount trained models
+    restart: unless-stopped
+
+  secretsweep-worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    command: celery -A api.celery_app worker
+             --loglevel=info --concurrency=2
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://ss:ss@postgres:5432/secretsweep
+      - REDIS_URL=redis://redis:6379/0
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USERNAME=neo4j
+      - NEO4J_PASSWORD=secretsweep
+    depends_on:
+      - redis
+      - postgres
+      - neo4j
+    volumes:
+      - ./ml/models:/app/ml/models
+    restart: unless-stopped
+
+  secretsweep-dashboard:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dashboard
+    ports: ["3000:3000"]
+    depends_on:
+      - secretsweep-api
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ss
+      POSTGRES_PASSWORD: ss
+      POSTGRES_DB: secretsweep
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ss"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  neo4j:
+    # Pinned, not the floating `5-community` tag: that currently resolves to 5.26.30,
+    # whose entrypoint script crash-loops on startup ("Usage: su-exec user-spec command
+    # [args]" — userid/groupid empty when checking mounted-volume permissions). Verified
+    # empirically: 5.26.28-community starts cleanly, 5.26.30 (via `5-community`) does not.
+    image: neo4j:5.26.28-community
+    environment:
+      NEO4J_AUTH: neo4j/secretsweep
+    ports: ["7474:7474", "7687:7687"]
+    volumes:
+      - neo4j_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  neo4j_data:

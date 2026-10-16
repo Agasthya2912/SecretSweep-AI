@@ -1,0 +1,63 @@
+# --- Environment / secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.log
+
+# --- Model weights / datasets ---
+data/models/*
+!data/models/.gitkeep
+data/datasets/*
+!data/datasets/.gitkeep
+*.onnx
+*.pt
+*.bin
+*.safetensors
+
+# --- Scanned/cloned repos (ScanPipeline's clone_base_dir, benchmark fixtures) ---
+# benchmark_results.json itself is NOT ignored — it's a small, meaningful evaluation
+# artifact (Phase 12), unlike these large regenerable repo clones.
+data/repos/
+data/benchmark_repos/
+
+# --- Node / React ---
+node_modules/
+dashboard/dist/
+dashboard/build/
+dashboard/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Docker ---
+*.pid
+
+
+
+# Local database
+data/*.db
+data/*.sqlite
+data/*.sqlite3
